@@ -28,4 +28,4 @@ app.get('/', (req, res) => {
   res.redirect('/Home');
 });
 
-app.listen(8080, () => console.log("server running at localhost:8080"));
+app.listen((process.env.PORT || 8080), () => console.log("server running at localhost:8080"));

@@ -81,7 +81,7 @@ let schemaOrder = {
 }
 
 let isDbConnected = false;
-let dbUrl = "mongodb://localhost:27017/HIT";
+let dbUrl = process.env.MONGODB_URI || "mongodb://localhost:27017/HIT";
 let dbConnection = mongoose.createConnection(dbUrl);
 
 dbConnection.on("error", (argument) => {
