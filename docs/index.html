@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>orbisagro</title>
+  </head>
+  <body>
+    <header class="hide-from-printer">
+      <nav class="navbar navbar-expand-sm fixed-top">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="navbar-brand" href="#">
+              <img src="https://orbisagro.com.ua/images/logo.png?123123" class="d-inline-block align-top" alt="">
+            </a>
+          </li>
+          <li class="nav-item"><a class="nav-link " href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link " href="#">Store</a></li>
+        </ul>
+        <ul class="navbar-nav navbar-right">
+         <li class="nav-item">
+           <button class="btn aml-auto order-lg-last " id="open_trash">
+             <i class="fa fa-trash" style="font-size:36px; color:#08F; padding-top:18px" id="count_of_shop_items">{{counter}}</i>
+           </button>
+         </li>
+        </ul>
+      </nav>
+      <h3>
+        Працюємо в режимі 24/7
+      </h3>
+    </header>
+
+    <div class="wrapper" id="goodsAPI">
+      <div class="list-group list-group-horizontal row" id="list-tab" role="tablist">
+        <a class="list-group-item list-group-item-action m-2 col text-center active "
+           id="list-all-list" data-toggle="list" href="#list-all"
+           style="max-width: 19rem; min-width: 19rem;"
+          role="tab" aria-controls="all">All
+        </a>
+        <a v-for="item in category_list" v-bind:class="'list-group-item list-group-item-action m-2 col text-center ' + item.activeted "
+           v-bind:id="'list-' + item._id + '-list'" data-toggle="list" v-bind:href="'#list-' + item._id"
+           style="max-width: 19rem; min-width: 19rem;"
+          role="tab" v-bind:aria-controls="item._id">
+          {{item.genreName}}
+        </a>
+      </div>
+
+      <div class="tab-content w-80 mt-5"
+        style="margin-bottom: 100px; position: absolute">
+        <div class="tab-pane fadeshow active" id="list-all"
+          role="tabpanel" aria-labelledby="list-all-list">
+          <div v-for="goods in goods_list" class="card m-2 float-left" v-bind:id="goods._id" style="width: 18rem;">
+            <img class="card-img-top min-vw-50" style="height:280px;" v-bind:src="goods.image_url" alt="Card image cap">
+            <div class="card-body">
+              <h5 class="card-title" style="height:80px;">{{goods.name}}</h5>
+              <div class="card-text" style="height:25px;">
+                {{goods.special_price}}
+              </div>
+              <div class="card-text" style="height:25px;">
+                <del v-if="goods.price != goods.special_price && goods.special_price != null">{{goods.price}}</del>
+                <span v-else>{{goods.price}}</span>
+              </div>
+              <button type="button" name="button" class="btn btn-primary hide-from-printer" v-on:click="open(goods);">Open</button>
+            </div>
+          </div>
+        </div>
+
+        <div v-for="item in category_list" class="tab-pane fade" v-bind:id="'list-' + item._id"
+          role="tabpanel" v-bind:aria-labelledby="'list-' + item._id + '-list'">
+          <div v-for="solo in goods_by_category" v-if="item._id == solo._id">
+            <div v-for="goods in solo.data" class="card m-2 float-left" v-bind:id="goods._id" style="width: 18rem;">
+              <img class="card-img-top min-vw-50" style="height:280px;" v-bind:src="goods.image_url" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title" style="height:80px;">{{goods.name}}</h5>
+                <div class="card-text" style="height:25px;">
+                  {{goods.special_price}}
+                </div>
+                <div class="card-text" style="height:25px;">
+                  <del v-if="goods.price != goods.special_price && goods.special_price != null">{{goods.price}}</del>
+                  <span v-else>{{goods.price}}</span>
+                </div>
+                <button type="button" name="button" class="btn btn-primary hide-from-printer" v-on:click="open(goods);">Open</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="columns">
+        <div class="left-column">
+          <p>
+            Kostyantyn Molodenkov
+          </p>
+        </div>
+        <div class="center-column">
+          <a href='https://mail.google.com/mail/?view=cm&fs=1&to=molodenkovkos@gmail.com&su=&body=&bcc='>
+            <p>
+              molodenkovkos@gmail.com
+            </p>
+          </a>
+        </div>
+        <div class="right-column">
+          <p>
+            +38 067 963 97 45
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <div id="modalGoods" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="row" v-bind:id="goods._id">
+          <div class="col-sm">
+            <img style="height:280px; width: 18rem;" v-bind:src="goods.image_url" alt="Card image cap">
+          </div>
+          <div class="col-sm">
+            <h3>{{goods.name}}</h3>
+            <h5 class="table-wrapper-scroll-y my-custom-scrollbar">
+              {{goods.description}}
+            </h5>
+          </div>
+          <div class="col-sm">
+            <h3>
+              {{goods.special_price}}
+            </h3>
+            <del v-if="goods.price != goods.special_price && goods.special_price != null"><h4>{{goods.price}}</h4></del>
+            <h3 v-else>{{goods.price}}</h3>
+            <button type="button" name="button" class="btn btn-primary hide-from-printer" v-on:click="addToTrash(goods);">Купити</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div v-if="buy.length === 0">
+          <h1>Виберіть товари, які хочете купити, щоб вони відобразились в кошику</h1>
+        </div>
+        <div v-else class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Назва</th>
+                <th scope="col">Зображення</th>
+                <th scope="col">Ціна з ПДВ</th>
+                <th scope="col">Кількість</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="buy.length !== 0" v-for="(item, index) in buy">
+                <th scope="row">{{index + 1}}</th>
+                <td class="w-25">{{item.name}}</td>
+                <td><img style="width:100px; height:100px;" v-bind:src="item.image_url" alt="Card image cap"></td>
+                <td v-if="item.special_price != null || item.special_price != ''">{{item.special_price}}</td>
+                <td v-else>{{item.price}}</td>
+                <td>
+                  <button class="btn" v-on:click="addOne(index)"><i class="fa fa-plus"></i></button>
+                  {{item.count}}
+                  <button class="btn" v-on:click="minusOne(index)"><i class="fa fa-minus"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Сума:</th>
+                <td></td>
+                <td></td>
+                <td>{{totalPrice}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" placeholder="Name">
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="phone" class="form-control" id="phone" placeholder="Phone">
+          </div>
+          <button type="button" class="btn btn-primary" v-on:click="clearAll()">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

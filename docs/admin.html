@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <title>orbisagro</title>
+</head>
+  <body>
+    <div class="m-5">
+      <h1>ADMIN PANEL</h1>
+      <a href="/Home" class="btn btn-primary">Back to Home Page</a>
+      <div class="mt-5">
+        <a href="#1" class="btn btn-secondary">Add genre</a>
+        <a href="#2" class="btn btn-secondary">Add goods</a>
+        <a href="#List" class="btn btn-secondary">Add GenresGoods</a>
+        <a href="#listGoodsGenre" class="btn btn-secondary">Go to list of GoodsGenre</a>
+        <a href="#listGenre" class="btn btn-secondary">Go to list of Genre</a>
+        <a href="#listGoods" class="btn btn-secondary">Go to list of Goods</a>
+        <a href="#listOrders" class="btn btn-secondary">Go to list of Orders</a>
+      </div>
+    </div>
+
+    <div class="m-5" id="1">
+      <h3>Add Genre</h3>
+      <form action="/createGenre" method="post">
+        <div class="form-group">
+          <label for="genreName">Genre of goods</label>
+          <input type="text" class="form-control" name="genreName" id="genreName" aria-describedby="genreName" placeholder="Enter genre">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+    <div class="m-5" id="2">
+      <h3>Add Goods</h3>
+      <form action="/createGoods" method="post">
+        <div class="form-group">
+          <label for="name">Name of goods</label>
+          <input type="text" class="form-control" name="name" id="name" placeholder="Enter name of goods">
+        </div>
+        <div class="form-group">
+          <label for="image_url">Image of goods</label>
+          <input type="text" class="form-control" name="image_url" id="image_url" aria-describedby="image_url" placeholder="Enter src image of goods">
+          <small id="goodsImage" class="form-text text-muted">Notice that here must be src of image</small>
+        </div>
+        <div class="form-group">
+          <label for="special_price">Special price of goods</label>
+          <input type="number" step="0.01" min="0.01" class="form-control" name="special_price" id="special_price" placeholder="Enter special price of goods">
+        </div>
+        <div class="form-group">
+          <label for="price">Price of goods</label>
+          <input type="number" step="0.01" min="0.01" value="0.01" class="form-control" name="price" id="price" placeholder="Enter price of goods">
+        </div>
+        <div class="form-group">
+          <label for="description">Description of goods</label>
+          <textarea type="text" rows="10" class="form-control" name="description" id="description" placeholder="Enter description of goods"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+    <div class="m-5" id="List">
+      <h3>Add Genres-Goods</h3>
+      <form action="createGoodsGenre" method="post">
+        <div class="form-group">
+          <label for="goodsId">Select Good</label>
+          <select class="form-control" id="goodsId" name="goodsId">
+            <option v-for="good in goods">{{good._id}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="genreId">Select Genre</label>
+          <select class="form-control" id="genreId" name="genreId">
+            <option v-for="genre in genres">{{genre._id}}</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+
+      <div>
+        <h3>List of GoodsGenre</h3>
+        <table class="table table-hower" id="listGoodsGenre">
+          <thread>
+            <th> Id</th>
+            <th> idGenre</th>
+            <th> idGoods</th>
+            <th> createdAt</th>
+            <th> remove</th>
+          </thread>
+          <tbody>
+            <tr v-for="item in genres_goods">
+              <td> {{item._id}} </td>
+              <td> {{item.genreId}} </td>
+              <td> {{item.goodsId}} </td>
+              <td> {{item.createdAt}} </td>
+              <td> <a class="glyphicon glyphicon-remove" v-bind:href="'/deleteGoodsGenre/' + item._id">X</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>List of genre</h3>
+      <table class="table table-hower" id="listGenre">
+        <thread>
+          <th> Id</th>
+          <th> Name</th>
+          <th> createdAt</th>
+          <th> remove</th>
+        </thread>
+        <tbody>
+          <tr v-for="genre in genres">
+            <td> {{genre._id}} </td>
+            <td> {{genre.genreName}} </td>
+            <td> {{genre.createdAt}} </td>
+            <td> <a class="glyphicon glyphicon-remove" v-bind:href="'/deleteGenre/' + genre._id">X</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 id="listGoods">List of Goods</h3>
+      <div class="card m-3 float-left" style="width: 20rem; height: 730px;" v-for="good in goods">
+        <h5>Id: {{good._id}}</h5>
+        <div class="col-sm">
+          Remove   <a class="glyphicon glyphicon-remove" v-bind:href="'/deleteGood/' + good._id">  X</a>
+        </div>
+        <div class="col-sm">
+          <img class="card-img-top min-vw-50" style="height:320px;"
+           v-bind:src="good.image_url" alt="Card image cap">
+        </div>
+        <div class="col-sm">
+          <h3 class="card-title">{{good.name}}</h3>
+        </div>
+        <div class="col-sm">
+          <h3 class="card-text">
+            {{good.special_price}}
+          </h3>
+          <del v-if="good.price != good.special_price && good.special_price != ''">
+            <h3 class="card-text">{{good.price}}</h3>
+          </del>
+          <h3 v-else>{{good.price}}</h3>
+        </div>
+        <div class="col-sm">
+          <h5 class="card-text table-wrapper-scroll-y my-custom-scrollbar" style="height: 120px;">
+            {{good.description}}
+          </h5>
+        </div>
+      </div>
+
+      <div>
+        <h3>List of Order</h3>
+        <table class="table table-hower" id="listOrders">
+          <thread>
+            <th> Id</th>
+            <th> email</th>
+            <th> nameUser</th>
+            <th> phone</th>
+            <th> products</th>
+            <th> createdAt</th>
+          </thread>
+          <tbody>
+            <tr v-for="item in orders">
+              <td> {{item._id}} </td>
+              <td> {{item.email}} </td>
+              <td> {{item.nameUser}} </td>
+              <td> {{item.phone}} </td>
+              <td class="table-wrapper-scroll-y my-custom-scrollbar" style="height: 120px; width: 350px; "> {{item.products}} </td>
+              <td> {{item.createdAt}} </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.0"></script>
+    <script src="./js/admin.js"></script>
+  </body>
+</html>
